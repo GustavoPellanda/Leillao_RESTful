@@ -26,7 +26,7 @@ function registrarProduto() {
       },
       body: JSON.stringify(infoProduto),
     })
-        // Resposta do servidor:
+      // Resposta do servidor:
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.log(error));
@@ -83,3 +83,35 @@ function atualizarTabelaProdutos() {
   listarProdutos();
 }
 setInterval(atualizarTabelaProdutos, 5000);
+
+function fazerLance() {
+  // Recebe as informações dos inputs:
+  const codigo = document.getElementById('Codigo_Produto').value;
+  const lance = document.getElementById('Lance_Produto').value;
+
+  // Cria o objeto:
+  const infoLance = {
+    codigo: codigo,
+    lance: lance,
+    nome_cliente: 'Gustavo',
+  };
+  
+  // Envia para o servidor:
+  fetch('/lances', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(infoLance)
+  })
+    // Resposta do servidor:
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+}
+
+// Chamada de fazerLance:
+document.getElementById('enviar_lance').addEventListener('click', function(event) {
+  event.preventDefault();
+  fazerLance();
+});
