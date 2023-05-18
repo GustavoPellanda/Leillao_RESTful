@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leilão</title>
+</head>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
+        }
+
+        .inscrever_produto, .fazer_lance, .vizualizar_produtos, .notificacoes {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .inscrever_produto h1, .fazer_lance h1, .vizualizar_produtos h1, .notificacoes h1 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #999;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .vizualizar_produtos {
+            overflow-y: auto;
+            max-height: 50vh;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        .notificacoes {
+            box-sizing: border-box;
+            overflow-y: scroll; 
+            max-height: 50vh;
+            background-color: #f4f4f4;
+            padding: 10px;
+        }
+
+        .notificacoes p {
+            margin: 0;
+        }
+
+        .notificacao {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+<body>
+    <header>
+        <h1>Leilão</h1>
+    </header>
+    <main>
+        <div class="inscrever_produto">
+            <h1>Inscrever Produtos</h1>
+            <form method="POST" action="/enviar_dados">
+                <label for="Codigo_Produto">Código do Produto:</label>
+                <input type="number" id="Codigo_Produto" name="Codigo_Produto">
+
+                <label for="Nome_Produto">Nome do Produto:</label>
+                <input type="text" id="Nome_Produto" name="Nome_Produto">
+
+                <label for="Descricao_Produto">Descrição do Produto:</label>
+                <input type="text" id="Descricao_Produto" name="Descricao_Produto">
+
+                <label for="Preco_Produto">Preço do Produto:</label>
+                <input type="number" id="Preco_Produto" name="Preco_Produto">
+
+                <label for="Tempo_Produto">Tempo do Produto:</label>
+                <input type="number" id="Tempo_Produto" name="Tempo_Produto">
+
+                <button type="submit" id="enviar_produto">Enviar</button>
+            </form>
+        </div>
+        <div class="vizualizar_produtos">
+            <h1>Produtos em Leilão</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Código</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Produto 1</td>
+                        <td>R$ 100,00</td>
+                        <td>12345</td>
+                    </tr>
+                    <tr>
+                        <td>Produto 2</td>
+                        <td>R$ 200,00</td>
+                        <td>67890</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="fazer_lance">
+            <h1>Fazer Lance</h1>
+
+            <form method="POST" action="/enviar_dados"></form>
+                <label for="Codigo_Produto">Código do Produto:</label>
+                <input type="number" id="Codigo_Produto" name="Codigo_Produto">
+
+                <Label for="Lance">Lance:</Label>
+                <input type="text" id="Lance" name="Lance">
+                
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+        <div class="notificacoes">
+            <h1>Notificações</h1>
+            <div class="notificacao">
+                <p>Nova oferta no Produto 1 - R$ 150,00</p>
+            </div>
+            <div class="notificacao">
+                <p>Produto 2 finalizado - Vendido por R$ 250,00</p>
+            </div>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='cliente.js') }}"></script>
+</body>
+</html>
