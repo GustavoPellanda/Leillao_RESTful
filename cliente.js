@@ -1,5 +1,21 @@
 listarProdutos();
 
+function registerClient() {
+  fetch('/clientes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nome_cliente: 'John Doe',
+      referencia_cliente: 'client1'
+    }),
+  })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+}
+
 function registrarProduto() {
     // Recebe as informações dos inputs:
     const codigo = document.getElementById('Codigo_Produto').value;
@@ -115,3 +131,24 @@ document.getElementById('enviar_lance').addEventListener('click', function(event
   event.preventDefault();
   fazerLance();
 });
+
+function exibeNotificacoes(notificacao) {
+  const notificacoesDiv = document.querySelector('.notificacoes');
+
+  // Cria um novo elemento notificação:
+  const notificacaoDiv = document.createElement('div');
+  notificacaoDiv.classList.add('notificacao');
+
+  // Cria um elemento <p> com a notificação dentro:
+  const p = document.createElement('p');
+  p.textContent = notificacao;
+
+  // Insere o elemento <p> na <div class="notificacao">:
+  notificacaoDiv.appendChild(p);
+
+  // Insere a <div class="notificacao"> na <div class="notificacoes">:
+  notificacoesDiv.appendChild(notificacaoDiv);
+}
+
+const teste = "Isso é uma notificação de teste";
+exibeNotificacoes(teste);
