@@ -30,14 +30,16 @@
         main {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            grid-gap: 20px;
-            padding: 20px;
+            grid-gap: 10px;
+            padding: 10px;
         }
 
         .inscrever_produto, .fazer_lance, .vizualizar_produtos, .notificacoes {
-            border: 1px solid #ccc;
-            padding: 10px;
+            border: 2px solid #ccc;
+            padding: 12px;
             border-radius: 5px;
+            max-height: calc(50vh - 20px);
+            overflow-y: auto; 
         }
 
         .inscrever_produto h1, .fazer_lance h1, .vizualizar_produtos h1, .notificacoes h1 {
@@ -94,7 +96,7 @@
         
         .vizualizar_produtos {
             overflow-y: auto;
-            max-height: calc(50vh - 15px);
+            max-height: calc(50vh - 20px);
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
             margin-bottom: 5px;
@@ -102,8 +104,8 @@
 
         .notificacoes {
             box-sizing: border-box;
-            overflow-y: scroll; 
-            max-height: calc(50vh - 15px);
+            overflow-y: auto;
+            max-height: calc(50vh - 20px);
             background-color: #f4f4f4;
             padding: 10px;
         }
@@ -184,10 +186,7 @@
         <div class="notificacoes">
             <h1>Notificações</h1>
             <div class="notificacao">
-                <p>Nova oferta no Produto 1 - R$ 150,00</p>
-            </div>
-            <div class="notificacao">
-                <p>Produto 2 finalizado - Vendido por R$ 250,00</p>
+                <p>Bem vindo ao Leilão!</p>
             </div>
         </div>
     </main>
