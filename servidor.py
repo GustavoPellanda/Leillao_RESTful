@@ -2,6 +2,7 @@ import time
 import threading
 from flask import Flask, jsonify, request, render_template
 from flask_socketio import SocketIO
+from datetime import datetime
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -33,7 +34,12 @@ class Servidor_Leilao(object):
             "nome_cliente": nome_cliente
         }
         self.produtos.append(produto)
-        socketio.emit('notification', {'message': 'Novo produto registrado'})
+        
+        hora = datetime.now().strftime("%H:%M:%S")
+        info_notificacao = {
+            "message": f"{hora} | Novo produto registrado por {nome_cliente}: {nome}. Preço Inicial: R${preco_inicial:.2f}"
+        }
+        socketio.emit('notification', info_notificacao)
         print(f"Produto '{nome}' registrado por '{nome_cliente}' com prazo final de {tempo_final} horas e preço inicial de R${preco_inicial:.2f}") 
 
     # Retorna todos os produtos registrados:
@@ -63,9 +69,13 @@ class Servidor_Leilao(object):
             if produto["codigo"] == codigo:
                 produto["preco_atual"] = lance
                 break
-
+        
+        hora = datetime.now().strftime("%H:%M:%S")
+        info_notificacao = {
+            "message": f"{hora} | Novo lance registrado no produto {codigo} por {nome_cliente}. Valor do Lance: R${lance:.2f}"
+        }
+        socketio.emit('notification', info_notificacao)
         print(f"Lance de {nome_cliente} registrado no produto {codigo} com valor R${lance:.2f}")
-        socketio.emit('notification', {'message': 'Novo lance registrado'})
         return True
 
     # Calcula o tempo restante dos leilões:
@@ -76,10 +86,11 @@ class Servidor_Leilao(object):
                 tempo_restante = produto['prazo_final'] - agora
                 if tempo_restante <= 0:
                     codigo = produto['codigo']
-                    self.lances.pop(codigo, None)
-                    self.produtos.remove(produto)
+                    self.lances.pop(codigo, None) # Deleta os lances
+                    self.produtos.remove(produto) # Deleta o produto
                     print(f"Lances do produto {codigo} expirados.")
-                    socketio.emit('notification', {'message': f"Leilão do produto {codigo} finalizado"})
+                    hora = datetime.now().strftime("%H:%M:%S")
+                    socketio.emit('notification', {'message': f"{hora} | Leilão do produto {codigo} finalizado"})
                 else:
                     print(f"Tempo restante para o produto {produto['codigo']}: {tempo_restante:.2f} segundos")
             time.sleep(10) #Tempo entre as verificações
