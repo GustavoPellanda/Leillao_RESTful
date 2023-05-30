@@ -6,8 +6,9 @@ function registrarProduto() {
     const nome = document.getElementById('Nome_Produto').value;
     const descricao = document.getElementById('Descricao_Produto').value;
     const preco = document.getElementById('Preco_Produto').value;
-    const tempo = document.getElementById('Tempo_Produto').value;
-  
+    const tempo = document.getElementById('Tempo_Produto').value; 
+    const cliente = document.getElementById('Nome_Cliente').value;
+
     // Cria o objeto:
     const infoProduto = {
       codigo: codigo,
@@ -15,7 +16,7 @@ function registrarProduto() {
       descricao: descricao,
       preco_inicial: preco,
       tempo_final: tempo,
-      nome_cliente: "Gustavo"
+      nome_cliente: cliente
     };
     
     // Envia para o servidor:
@@ -86,14 +87,15 @@ setInterval(atualizarTabelaProdutos, 5000);
 
 function fazerLance() {
   // Recebe as informações dos inputs:
-  const codigo = document.getElementById('Codigo_Produto').value;
-  const lance = document.getElementById('Lance_Produto').value;
-
+  const codigo = document.getElementById('Codigo_Produto_Lance').value;
+  const lance = document.getElementById('Lance_Produto').value; 
+  const nome = document.getElementById('Nome_Cliente_Lance').value; 
+ 
   // Cria o objeto:
   const infoLance = {
     codigo: codigo,
     lance: lance,
-    nome_cliente: 'Gustavo',
+    nome_cliente: nome,
   };
   
   // Envia para o servidor:
