@@ -1,22 +1,25 @@
 import time
 import threading
 from flask import Flask, jsonify, request, render_template
+from flask_socketio import SocketIO
+
+app = Flask(__name__)
+socketio = SocketIO(app)
 
 class Servidor_Leilao(object):
     def __init__(self):
-        self.clientes = {}
         self.produtos = []
         self.lances = {}
         self.thread_verificacao = None
-    
+
     def inicia_thread_esgotar(self):
         if self.thread_verificacao is None or not self.thread_verificacao.is_alive():
             self.thread_verificacao = threading.Thread(target=self.esgotar_leiloes)
             self.thread_verificacao.start()
-
+    
     def registrar_produto(self, codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente):
         # Calcula o tempo limite do leilão
-        tempo_final_segundos = tempo_final * 1 #3600
+        tempo_final_segundos = tempo_final * 1 #3600 para horas
         prazo_final = time.time() + tempo_final_segundos 
 
         produto = {
@@ -26,11 +29,11 @@ class Servidor_Leilao(object):
             "preco_inicial": preco_inicial,
             "preco_atual": preco_inicial, # Será atualizado quando lances forem feitos
             "prazo_final": prazo_final,
-            "tempo_restante": prazo_final - time.time(),  # Calcular o tempo restante em segundos
+            "tempo_restante": prazo_final - time.time(), # Calcula o tempo restante em segundos
             "nome_cliente": nome_cliente
         }
         self.produtos.append(produto)
-        
+        socketio.emit('notification', {'message': 'Novo produto registrado'})
         print(f"Produto '{nome}' registrado por '{nome_cliente}' com prazo final de {tempo_final} horas e preço inicial de R${preco_inicial:.2f}") 
 
     # Retorna todos os produtos registrados:
@@ -58,12 +61,11 @@ class Servidor_Leilao(object):
         # Atualiza o preço atual do produto:
         for produto in self.produtos:
             if produto["codigo"] == codigo:
-                print("aaaaaaaaaaaa passou aqui aaaaaaaaaaaa")
                 produto["preco_atual"] = lance
                 break
 
         print(f"Lance de {nome_cliente} registrado no produto {codigo} com valor R${lance:.2f}")
-        print(self.produtos)
+        socketio.emit('notification', {'message': 'Novo lance registrado'})
         return True
 
     # Calcula o tempo restante dos leilões:
@@ -73,16 +75,15 @@ class Servidor_Leilao(object):
             for produto in self.produtos:
                 tempo_restante = produto['prazo_final'] - agora
                 if tempo_restante <= 0:
-                    # Deleta:
                     codigo = produto['codigo']
                     self.lances.pop(codigo, None)
                     self.produtos.remove(produto)
                     print(f"Lances do produto {codigo} expirados.")
+                    socketio.emit('notification', {'message': f"Leilão do produto {codigo} finalizado"})
                 else:
                     print(f"Tempo restante para o produto {produto['codigo']}: {tempo_restante:.2f} segundos")
             time.sleep(10) #Tempo entre as verificações
 
-app = Flask(__name__)
 servidor = Servidor_Leilao()
 
 @app.route('/')
@@ -100,7 +101,7 @@ def registrar_produto():
     nome_cliente = data['nome_cliente']
     servidor.registrar_produto(codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente)
     servidor.inicia_thread_esgotar()
-    return jsonify({'verificação': 'Produto registrado com sucesso'})
+    return jsonify({'resposta': 'Produto registrado com sucesso'})
 
 @app.route('/produtos', methods=['GET'])
 def obter_produtos():
@@ -114,7 +115,7 @@ def fazer_lance():
     lance = float(data['lance'])
     nome_cliente = data['nome_cliente']
     resposta = servidor.fazer_lance(codigo, lance, nome_cliente)
-    return jsonify({'verificação': 'lance = ' + str(resposta)})
-    
+    return jsonify({'resposta': 'lance = ' + str(resposta)})
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
