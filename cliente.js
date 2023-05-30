@@ -1,21 +1,5 @@
 listarProdutos();
 
-function registerClient() {
-  fetch('/clientes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      nome_cliente: 'John Doe',
-      referencia_cliente: 'client1'
-    }),
-  })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
-}
-
 function registrarProduto() {
     // Recebe as informações dos inputs:
     const codigo = document.getElementById('Codigo_Produto').value;
@@ -132,7 +116,7 @@ document.getElementById('enviar_lance').addEventListener('click', function(event
   fazerLance();
 });
 
-function exibeNotificacoes(notificacao) {
+function exibirNotificacoes(notificacao) {
   const notificacoesDiv = document.querySelector('.notificacoes');
 
   // Cria um novo elemento notificação:
@@ -150,5 +134,14 @@ function exibeNotificacoes(notificacao) {
   notificacoesDiv.appendChild(notificacaoDiv);
 }
 
-const teste = "Isso é uma notificação de teste";
-exibeNotificacoes(teste);
+function receberNotificacoes() {
+  const socket = io();
+
+  socket.on('notification', function (data) {
+    const notificacao = data.message;
+    console.log(notificacao);
+    exibirNotificacoes(notificacao);
+  });
+}
+
+receberNotificacoes();
