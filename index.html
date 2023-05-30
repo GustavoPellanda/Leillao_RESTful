@@ -38,7 +38,7 @@
             border: 2px solid #ccc;
             padding: 12px;
             border-radius: 5px;
-            max-height: calc(50vh - 20px);
+            max-height: 60vh;
             overflow-y: auto; 
         }
 
@@ -96,7 +96,7 @@
         
         .vizualizar_produtos {
             overflow-y: auto;
-            max-height: calc(50vh - 20px);
+            max-height: 50vh;
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
             margin-bottom: 5px;
@@ -105,7 +105,7 @@
         .notificacoes {
             box-sizing: border-box;
             overflow-y: auto;
-            max-height: calc(50vh - 20px);
+            max-height: 50vh;
             background-color: #f4f4f4;
             padding: 10px;
         }
@@ -144,6 +144,9 @@
                 <label for="Tempo_Produto">Tempo do Produto:</label>
                 <input type="number" id="Tempo_Produto" name="Tempo_Produto">
 
+                <label for="Nome_Cliente">Nome do Cliente:</label>
+                <input type="text" id="Nome_Cliente" name="Nome_Cliente">
+
                 <button type="submit" id="enviar_produto">Enviar</button>
             </form>
         </div>
@@ -175,10 +178,13 @@
             <h1>Fazer Lance</h1>
             <form method="POST" action="/enviar_dados">
                 <label for="Codigo_Produto">Código do Produto:</label>
-                <input type="number" id="Codigo_Produto" name="Codigo_Produto">
+                <input type="number" id="Codigo_Produto_Lance" name="Codigo_Produto">
         
                 <label for="Lance">Lance:</label>
                 <input type="number" id="Lance_Produto" name="Lance">
+
+                <label for="Nome_Cliente">Nome do Cliente:</label>
+                <input type="text" id="Nome_Cliente_Lance" name="Nome_Cliente">
                 
                 <button type="submit" id="enviar_lance">Enviar</button>
             </form>
