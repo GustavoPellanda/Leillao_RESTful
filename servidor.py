@@ -19,7 +19,12 @@ class Servidor_Leilao(object):
             self.thread_verificacao.start()
     
     def registrar_produto(self, codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente):
-        # Calcula o tempo limite do leilão
+        # Confere se o código já foi registrado:
+        for produto in self.produtos:
+            if produto["codigo"] == codigo:
+                return "CODIGO_JA_EXISTENTE"
+        
+        # Calcula o tempo limite do leilão:
         tempo_final_segundos = tempo_final * 1 #3600 para horas
         prazo_final = time.time() + tempo_final_segundos 
 
@@ -40,7 +45,9 @@ class Servidor_Leilao(object):
             "message": f"{hora} | Novo produto registrado por {nome_cliente}: {nome}. Preço Inicial: R${preco_inicial:.2f}"
         }
         socketio.emit('notification', info_notificacao)
+        
         print(f"Produto '{nome}' registrado por '{nome_cliente}' com prazo final de {tempo_final} horas e preço inicial de R${preco_inicial:.2f}") 
+        return "PRODUTO_ACEITO"
 
     # Retorna todos os produtos registrados:
     def obter_produtos(self):
@@ -75,6 +82,7 @@ class Servidor_Leilao(object):
             "message": f"{hora} | Novo lance registrado no produto {codigo} por {nome_cliente}. Valor do Lance: R${lance:.2f}"
         }
         socketio.emit('notification', info_notificacao)
+        
         print(f"Lance de {nome_cliente} registrado no produto {codigo} com valor R${lance:.2f}")
         return True
 
@@ -104,15 +112,23 @@ def index():
 @app.route('/produtos', methods=['POST'])
 def registrar_produto():
     data = request.get_json()
+    
     codigo = int(data['codigo'])
     nome = data['nome']
     descricao = data['descricao']
     preco_inicial = float(data['preco_inicial'])
     tempo_final = float(data['tempo_final'])
     nome_cliente = data['nome_cliente']
-    servidor.registrar_produto(codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente)
+    
     servidor.inicia_thread_esgotar()
-    return jsonify({'resposta': 'Produto registrado com sucesso'})
+    
+    # Responde se o produto foi aprovado ou não:
+    resposta = servidor.registrar_produto(codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente)
+    if resposta == "CODIGO_JA_EXISTENTE":
+        return jsonify({'resposta': 'Error: Produto com código já existente.'})
+    else:
+        servidor.inicia_thread_esgotar()
+        return jsonify({'resposta': 'Produto registrado com sucesso'})
 
 @app.route('/produtos', methods=['GET'])
 def obter_produtos():
