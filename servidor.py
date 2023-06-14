@@ -61,7 +61,7 @@ class Servidor_Leilao(object):
         if codigo in self.lances:
             if lance <= self.lances[codigo]["lance"]:
                 print(f"Lance de {nome_cliente} não supera lance anterior no produto {codigo}.")
-                return False
+                return "LANCE_REJEITADO"
 
         # Atualiza o registro de lances:
         lance_registro = {
@@ -84,7 +84,7 @@ class Servidor_Leilao(object):
         socketio.emit('notification', info_notificacao)
         
         print(f"Lance de {nome_cliente} registrado no produto {codigo} com valor R${lance:.2f}")
-        return True
+        return "LANCE_APROVADO"
 
     # Calcula o tempo restante dos leilões:
     def esgotar_leiloes(self):
@@ -142,7 +142,7 @@ def fazer_lance():
     lance = float(data['lance'])
     nome_cliente = data['nome_cliente']
     resposta = servidor.fazer_lance(codigo, lance, nome_cliente)
-    return jsonify({'resposta': 'lance = ' + str(resposta)})
+    return jsonify({'resposta': resposta})
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
