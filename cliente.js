@@ -37,6 +37,7 @@ function registrarProduto() {
     })
     .then(data => {
       if (data && data.resposta === 'Produto registrado com sucesso') {
+        console.log(data)
         alert('Produto registrado com sucesso!');
         listarProdutos(); // Atualiza a lista de produtos
       } else {
@@ -121,10 +122,30 @@ function fazerLance() {
     },
     body: JSON.stringify(infoLance)
   })
-    // Resposta do servidor:
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
+    
+  // Resposta do servidor:
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Erro de requisição: ' + response.status);
+  })
+  .then(data => {
+    const resposta = data.resposta;
+    if (resposta === 'LANCE_APROVADO') {
+      console.log(data)
+      alert('Lance aprovado!');
+      listarProdutos(); // Atualiza a lista de produtos
+    } else if (resposta === 'LANCE_REJEITADO') {
+      console.log(data)
+      alert('Lance rejeitado. Não supera lance anterior.');
+    } else {
+      throw new Error('Resposta inválida do servidor');
+    }
+  })
+  .catch(error => {
+    alert(error.message);
+  });
 }
 
 // Chamada de fazerLance:
