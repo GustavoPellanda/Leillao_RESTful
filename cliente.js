@@ -28,25 +28,29 @@ function registrarProduto() {
       body: JSON.stringify(infoProduto),
     })
 
-    // Resposta do servidor:
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error('Erro de requisição: ' + response.status);
-    })
-    .then(data => {
-      if (data && data.resposta === 'Produto registrado com sucesso') {
-        console.log(data)
-        alert('Produto registrado com sucesso!');
-        listarProdutos(); // Atualiza a lista de produtos
-      } else {
-        throw new Error('Erro: Produto com código já existente.');
-      }
-    })
-    .catch(error => {
-      alert(error.message);
-    });      
+  // Resposta do servidor:
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Erro de requisição: ' + response.status);
+  })
+  .then(data => {
+    const resposta = data.resposta;
+    if (resposta === 'PRODUTO_ACEITO') {
+      console.log(data)
+      alert('Produto registrado com sucesso!');
+      listarProdutos(); // Atualiza a lista de produtos
+    } else if (resposta === 'CODIGO_JA_EXISTENTE') {
+      console.log(data)
+      alert('Produto com código já existente.');
+    } else {
+      throw new Error('Resposta inválida do servidor');
+    }
+  })
+  .catch(error => {
+    alert(error.message);
+  });      
   }
 
 // Chamada de registrarProduto:
