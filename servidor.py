@@ -122,13 +122,8 @@ def registrar_produto():
     
     servidor.inicia_thread_esgotar()
     
-    # Responde se o produto foi aprovado ou não:
     resposta = servidor.registrar_produto(codigo, nome, descricao, preco_inicial, tempo_final, nome_cliente)
-    if resposta == "CODIGO_JA_EXISTENTE":
-        return jsonify({'resposta': 'Error: Produto com código já existente.'})
-    else:
-        servidor.inicia_thread_esgotar()
-        return jsonify({'resposta': 'Produto registrado com sucesso'})
+    return jsonify({'resposta': resposta})
 
 @app.route('/produtos', methods=['GET'])
 def obter_produtos():
@@ -142,6 +137,7 @@ def fazer_lance():
     lance = float(data['lance'])
     nome_cliente = data['nome_cliente']
     resposta = servidor.fazer_lance(codigo, lance, nome_cliente)
+    
     return jsonify({'resposta': resposta})
 
 if __name__ == '__main__':
