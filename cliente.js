@@ -27,10 +27,25 @@ function registrarProduto() {
       },
       body: JSON.stringify(infoProduto),
     })
-      // Resposta do servidor:
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.log(error));
+
+    // Resposta do servidor:
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Erro de requisição: ' + response.status);
+    })
+    .then(data => {
+      if (data && data.resposta === 'Produto registrado com sucesso') {
+        alert('Produto registrado com sucesso!');
+        listarProdutos(); // Atualiza a lista de produtos
+      } else {
+        throw new Error('Erro: Produto com código já existente.');
+      }
+    })
+    .catch(error => {
+      alert(error.message);
+    });      
   }
 
 // Chamada de registrarProduto:
