@@ -57,6 +57,11 @@ class Servidor_Leilao(object):
         return self.produtos
     
     def fazer_lance(self, codigo, lance, nome_cliente):
+        # Verifica se o código do produto está registrado:
+        if codigo not in [produto["codigo"] for produto in self.produtos]:
+            print(f"Produto {codigo} não encontrado.")
+            return "CODIGO_INEXISTENTE"
+    
         # Verifica se o lance é maior que os anteriores:
         if codigo in self.lances:
             if lance <= self.lances[codigo]["lance"]:
@@ -94,11 +99,18 @@ class Servidor_Leilao(object):
                 tempo_restante = produto['prazo_final'] - agora
                 if tempo_restante <= 0:
                     codigo = produto['codigo']
+                    preco_final = produto["preco_atual"]
+                    
                     self.lances.pop(codigo, None) # Deleta os lances
                     self.produtos.remove(produto) # Deleta o produto
+                    
                     print(f"Lances do produto {codigo} expirados.")
+                    
                     hora = datetime.now().strftime("%H:%M:%S")
-                    socketio.emit('notification', {'message': f"{hora} | Leilão do produto {codigo} finalizado"})
+                    info_notificacao = {
+                        "message": f"{hora} | Leilão do produto {codigo} finalizado. Preço Final: R${preco_final:.2f}"
+                    }
+                    socketio.emit('notification', info_notificacao)
                 else:
                     print(f"Tempo restante para o produto {produto['codigo']}: {tempo_restante:.2f} segundos")
             time.sleep(10) #Tempo entre as verificações
