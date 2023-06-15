@@ -41,10 +41,12 @@ function registrarProduto() {
       console.log(data)
       alert('Produto registrado com sucesso!');
       listarProdutos(); // Atualiza a lista de produtos
-    } else if (resposta === 'CODIGO_JA_EXISTENTE') {
+    } 
+    else if (resposta === 'CODIGO_JA_EXISTENTE') {
       console.log(data)
       alert('Produto com código já existente.');
-    } else {
+    } 
+    else {
       throw new Error('Resposta inválida do servidor');
     }
   })
@@ -137,13 +139,19 @@ function fazerLance() {
   .then(data => {
     const resposta = data.resposta;
     if (resposta === 'LANCE_APROVADO') {
-      console.log(data)
+      console.log(data);
       alert('Lance aprovado!');
       listarProdutos(); // Atualiza a lista de produtos
-    } else if (resposta === 'LANCE_REJEITADO') {
-      console.log(data)
+    } 
+    else if (resposta === 'LANCE_REJEITADO') {
+      console.log(data);
       alert('Lance rejeitado. Não supera lance anterior.');
-    } else {
+    } 
+    else if (resposta === 'CODIGO_INEXISTENTE') {
+      console.log(data);
+      alert('Lance rejeitado. Código do produto não encontrado.');
+    } 
+    else {
       throw new Error('Resposta inválida do servidor');
     }
   })
